@@ -69,9 +69,21 @@ void display_primes (int n){
 
 }
 
+/*
+Switch statement menu for debug and choosing function
+*/
 int main ()
 {
-  int s;
-  s = compute_sqrt(5);
-  printf("%d",s);
+  printf("Welcome to Nathaniel Fishel's Assignment Two.\n Please enter a question number to use.\n>");
+  char choice;
+  choice = getchar();
+
+  switch (choice) {
+    case 1:
+    printf("\nEnter a number to compute pi to the first nth terms\n>");
+
+    compute_pi();
+    break;
+  }
+
 }
