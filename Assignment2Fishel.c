@@ -37,7 +37,6 @@ double compute_sqrt (double x)
   {
     next = .5*(last + x/last);
     last = next;
-    printf("%f\n",last);
   }
   return next;
 }
@@ -101,7 +100,7 @@ void process_scores(){
     }
     i++;
   }
-  printf("Here are the names %s",names[0]);
+  printf("Here are the names %s",&names[0]);
 }
 
 /*
@@ -120,14 +119,14 @@ int main ()
     printf("\nEnter a number to compute pi to the first nth terms\n>");
     scanf("%lf",&pick);
     double pi = compute_pi(pick);
-    printf("\nPi = %f",pi);
+    printf("\nPi = %f\n",pi);
     break;
 
     case 2:
     printf("\nEnter a number to find its square root\n>");
     scanf("%lf",&pick);
     double sqrt = compute_sqrt(pick);
-    printf("\nThe square root of %f is %f",pick,sqrt);
+    printf("\nThe square root of %f is %f\n",pick,sqrt);
     break;
 
     case 3:
