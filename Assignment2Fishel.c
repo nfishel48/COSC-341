@@ -4,6 +4,7 @@ A copy of this program can be found on my github www.github.come/nfishel48
 */
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 /*
 This funtion will compute pi using n terms
@@ -79,6 +80,31 @@ void display_primes (int n){
 }
 
 /*
+This function will read student names and scores from the user. Then it will display 
+the average, the minimum, and the maximum along with that sudents name
+*/
+void process_scores(){
+  printf("\nPlease enter your data\n");
+  int i, current, done = 0;
+  char *names;
+  names = (char*)malloc( 10* sizeof(char));
+
+  while(done == 0){
+    printf(">");
+    /*
+    Problem is here
+    scanf("%s %d",&names[i], &current);
+    */
+    printf("HERE");
+    if(names[i] == 'q'){
+      done = 1;
+    }
+    i++;
+  }
+  printf("Here are the names %s",names[0]);
+}
+
+/*
 Switch statement menu for debug and choosing function
 */
 int main ()
@@ -109,6 +135,12 @@ int main ()
     scanf("%lf",&pick);
     display_primes(pick);
     break;
+
+    case 4:
+    printf("This function will read student names and scores\nEnter data in the this way\n Name Score\nPress q to exit");
+    process_scores();
+    break;
+
   }
 
 
