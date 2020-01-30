@@ -46,20 +46,17 @@ This function will return Yes or No if a interger is a Prime Number
 */
 int is_prime(int n)
 {
-  int i =0;
+  int i = 1;
   int p = 0;
-  printf("%d",n);
-  for(i=0; i<=n; i++){
-    p =( n%i);
-    printf("%d",p);
-    if(p != 0){
+  for(i = 2; i<=n; i++){
+    if(n%i == 0 && i != n){
       /*
       Return 0 for false if remainder is greater than 0
       */
-     printf("here i am");
       return 0;
     }
   }
+  
   /*
   Return 1 for true if no number has remainder greater than 0
   */
@@ -71,12 +68,14 @@ This function displays all prime number <=n
 */
 void display_primes (int n){
   int i = 1;
-  int ans;
-  for(i = 1; i<=n; i++)
+  int ans = 0;
+  for(i = 2; i<=n; i++){
     ans = is_prime(i);
     if(ans == 1){
       printf("\n%d",i);
     }
+  }
+   
 }
 
 /*
@@ -106,7 +105,7 @@ int main ()
     break;
 
     case 3:
-    printf("\nEnter a number and all prime <= will be displayed\n");
+    printf("\nEnter a number and all prime <= will be displayed\n>");
     scanf("%lf",&pick);
     display_primes(pick);
     break;
