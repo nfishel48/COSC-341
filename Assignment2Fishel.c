@@ -101,13 +101,13 @@ void display_primes (int n){
 
 
 /*
+======================================================================================================
 This function will read student names and scores from the user. Then it will display 
 the average, the minimum, and the maximum along with that sudents name
 */
 void process_scores(){
   printf("\nPlease enter your data\n");
-  int current, done = 0;
-  int i =0;
+  int current, done, i = 0;
   int pos1, pos2, max= 0;
   double avg;
   int min = 100;
@@ -118,6 +118,9 @@ void process_scores(){
 
   do {
     scanf("%s",word);
+    /*
+    If the user enters q they can quit
+    */
     if(word[0] == quit[0]){
       done = 1;
       continue;
@@ -145,6 +148,9 @@ void process_scores(){
   printf("%s had the minimum score of %d\n",names[pos2],min);
   printf("%s had the maximum score of %d\n",names[pos1],max);
 }
+/*
+======================================================================================================
+*/
 
 /*
 Switch statement menu for debug and choosing function
