@@ -6,7 +6,11 @@ A copy of this program can be found on my github www.github.come/nfishel48
 #include <stdio.h>
 #include <stdlib.h>
 
+
+
 /*
+Question 1
+======================================================================================================
 This funtion will compute pi using n terms
 */
 double compute_pi(int n)
@@ -24,8 +28,15 @@ double compute_pi(int n)
   total = total * 4;
   return total;
 }
+/*
+======================================================================================================
+*/
+
+
 
 /*
+Question 2
+======================================================================================================
 This function computes the square root of a number
 */
 double compute_sqrt (double x)
@@ -40,8 +51,15 @@ double compute_sqrt (double x)
   }
   return next;
 }
+/*
+======================================================================================================
+*/
+
+
 
 /*
+Question 3
+======================================================================================================
 This function will return Yes or No if a interger is a Prime Number
 */
 int is_prime(int n)
@@ -77,6 +95,10 @@ void display_primes (int n){
   }
    
 }
+/*
+======================================================================================================
+*/
+
 
 /*
 This function will read student names and scores from the user. Then it will display 
@@ -84,23 +106,44 @@ the average, the minimum, and the maximum along with that sudents name
 */
 void process_scores(){
   printf("\nPlease enter your data\n");
-  int i, current, done = 0;
-  char *names;
-  names = (char*)malloc( 10* sizeof(char));
+  int current, done = 0;
+  int i =0;
+  int pos1, pos2, max= 0;
+  double avg;
+  int min = 100;
+  char names[10][25];
+  char word[25];
+  char quit[25];
+  quit[0] = 'q';
 
-  while(done == 0){
-    printf(">");
-    /*
-    Problem is here
-    scanf("%s %d",&names[i], &current);
-    */
-    printf("HERE");
-    if(names[i] == 'q'){
+  do {
+    scanf("%s",word);
+    if(word[0] == quit[0]){
       done = 1;
+      continue;
     }
+    scanf("%d ",&current);
+    strcpy(names[i], word);
+   
+    avg += current;
+    if(current > max){
+      max = current;
+      pos1 = i;
+    }
+    if(current < min){
+      min = current;
+      pos2 = i;
+    } 
     i++;
-  }
-  printf("Here are the names %s",&names[0]);
+    done = 1;
+    if(word[0] != quit[0]){
+      done = 0;
+    }
+  }while(done == 0);
+  avg = avg/i;
+  printf("\nThe average score was: %f\n",avg);
+  printf("%s had the minimum score of %d\n",names[pos2],min);
+  printf("%s had the maximum score of %d\n",names[pos1],max);
 }
 
 /*
