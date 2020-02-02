@@ -4,6 +4,7 @@ A copy of this program can be found on my github www.github.come/nfishel48
 */
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 #include <stdlib.h>
 
 
@@ -230,6 +231,25 @@ double compute_tax(int income, char *status, char state){
 */
 
 /*
+This function will take the input parameters as coefficents of a quadratic equation.
+It wil then compute if there are solutions
+if there are solutions it will return the solutions if not it will return 0
+*/
+int quadratic(double a, double b, double c, double *solution1, double *solution2){
+  double cando = (b*b) - 4*a*c;
+  if(cando >= 0){
+    *solution1 = ((b*-1) + sqrt((b*b)-(4*a*c)))/(2*a);
+    *solution2 = ((b*-1) - sqrt((b*b)-(4*a*c)))/(2*a);
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
+  
+}
+
+/*
 Switch statement menu for debug and choosing function
 */
 int main ()
@@ -281,6 +301,22 @@ int main ()
     rate = compute_tax(income, status, state);
     printf("\nYour tax rate is %f ", rate);
     break;
+
+    case 6:
+    printf("This function will read coefficents for a quadratic function and let you know if it has a solution, if it has a solution it will be displayed\n");
+    double a,b,c;
+    double x, y;
+    printf("Enter coefficent a, b, c sperated by spaces\n>");
+    scanf("%lf %lf %lf",&a,&b,&c);
+    int solveable = quadratic(a,b,c,&x,&y);
+    if(solveable == 0){
+      printf("\nNo solution");
+    }
+    else{
+      printf("The equation is solveable\nThe solutions are %f and %f", x, y);
+    }
+    break;
+
 
 
   }
