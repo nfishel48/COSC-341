@@ -153,6 +153,83 @@ void process_scores(){
 */
 
 /*
+======================================================================================================
+This function will determine the tax amount according to the following tax rules:
+Tax rates depend on income, martial status and state residency.
+In state residents rates {
+Single and income < 30000 tax rate->20%
+Single and income > 30000 tax rate->25%
+married and income < 50000 tax rate -> 10%
+married and incom >= 50000 tax rate -> 15%
+}
+Out of state residents {
+  same rules but -3%
+}
+*/
+double compute_tax(int income, char *status, char state){
+  const char *comp[4];
+  comp[0] = "single";
+  comp[1] = "SINGLE";
+  comp[2] = "married";
+  comp[3] = "MARRIED";
+  double rate = 0;
+  int i = 0;
+  
+    /*
+    Used to validate input
+    */
+   if(income < 0){
+     return -1;
+   }
+    if(state == 'i' || state == 'o'){
+   }
+   else{
+     return -1;
+   }
+  
+   if(strcmp(status,comp[0]) == 0 || strcmp(status,comp[1]) == 0){
+   }
+   else if(strcmp(status,comp[2]) == 0 || strcmp(status,comp[3]) == 0){
+   }
+   else{
+     return -1;
+   }
+
+  if(strcmp(status,comp[0]) == 0 || strcmp(status,comp[1]) == 0){
+    /*
+    if single
+    */
+    if(income < 30000){
+      rate = 20;
+    }
+    else{
+      rate = 25;
+      }
+    }
+    else{
+    /*
+    if married
+    */
+      if(income < 50000){
+        rate = 10;
+      }
+      else{
+        rate = 15;
+      }
+    }
+  
+  if(state == 'o')
+    {
+      rate = rate - 3;
+    }
+
+ return rate;
+}
+/*
+======================================================================================================
+*/
+
+/*
 Switch statement menu for debug and choosing function
 */
 int main ()
@@ -188,6 +265,23 @@ int main ()
     printf("This function will read student names and scores\nEnter data in the this way\n Name Score\nPress q to exit");
     process_scores();
     break;
+
+    case 5:
+    printf("This function will collect your information and return your tax rate\n");
+    int income;
+    char status[7];
+    char state;
+    double rate;
+    printf("Enter your income\n>");
+    scanf("%d", &income);
+    printf("Enter i for in-state, or o for out of state\n>");
+    scanf(" %c", &state);
+    printf("Enter your status\n>");
+    scanf("%s", status);
+    rate = compute_tax(income, status, state);
+    printf("\nYour tax rate is %f ", rate);
+    break;
+
 
   }
 
