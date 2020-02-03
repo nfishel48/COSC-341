@@ -231,6 +231,7 @@ double compute_tax(int income, char *status, char state){
 */
 
 /*
+======================================================================================================
 This function will take the input parameters as coefficents of a quadratic equation.
 It wil then compute if there are solutions
 if there are solutions it will return the solutions if not it will return 0
@@ -246,8 +247,54 @@ int quadratic(double a, double b, double c, double *solution1, double *solution2
   {
     return 0;
   }
-  
 }
+/*
+======================================================================================================
+*/
+
+/*
+======================================================================================================
+This fuction will recusivly compute the factorial of n
+*/
+int factorial(int n){
+  if(n <= 1){
+    return 1;
+  }
+  else
+  {
+    return n*factorial(n-1);
+  }
+}
+/*
+======================================================================================================
+*/
+
+/*
+======================================================================================================
+This function will count all the characters and lines in file
+*/
+void file_count(char *file, int *characters, int *lines){
+  int c_count, l_count, done = 0;
+  char c;
+  FILE *fp;
+  fp = fopen(file, "r");
+  while((c = fgetc(fp)) != EOF){
+    c_count++;
+    if(c == '\n' || c == '\0'){
+      l_count++;
+    }
+  }
+  *characters = c_count;
+  *lines = l_count;
+}
+/*
+======================================================================================================
+*/
+
+void file_sort(char *infile, char *outfile){
+
+}
+
 
 /*
 Switch statement menu for debug and choosing function
@@ -316,6 +363,29 @@ int main ()
       printf("The equation is solveable\nThe solutions are %f and %f", x, y);
     }
     break;
+
+    case 7:
+    printf("This function will compute factorial of your chosen interger");
+    int pick;
+    printf("\nPlease enter your interger\n>");
+    scanf("%d",&pick);
+    pick = factorial(pick);
+    printf("The factorial is: %d",pick);
+    break;
+
+    case 8:
+    printf("This function will count the characters and lines in a file");
+    char file_name[25];
+    printf("\nPlease enter a file name\n>");
+    scanf("%s",file_name);
+    int character_count = 0;
+    int line_count = 0;
+    file_count(file_name, &character_count, &line_count);
+    printf("\nIn the file: %s there are %d characters and %d lines",file_name,character_count,line_count);
+    break;
+
+    
+
 
 
 
