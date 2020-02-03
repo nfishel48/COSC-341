@@ -292,6 +292,47 @@ void file_count(char *file, int *characters, int *lines){
 */
 
 void file_sort(char *infile, char *outfile){
+  FILE *fp;
+  int *id;
+  char *grade;
+  double *gpa;
+
+  fp = fopen(infile, "r");
+  int total = fgetc(fp);
+  total = total -48;
+  /*
+  Create dynamic arrays
+  */
+  id = (int *)malloc(total * sizeof(int));
+  grade = (char *)malloc(total * sizeof(char));
+  gpa = (double *)malloc(total * sizeof(double));
+
+  /*
+  Read in data
+  */
+  int i = 0;
+  for(i = 0; i<total; i++){
+    fscanf(fp,"%d", &id[i]);
+    fscanf(fp," %c", &grade[i]);
+    fscanf(fp,"%lf", &gpa[i]);
+  }
+  fclose(fp);
+
+  /*
+  Sort the data
+  */
+  int temp_id, min;
+  char temp_gr;
+  double temp_gpa;
+  for(i = 0; i<total; i++){
+    min = id[i];
+    
+  }
+
+ /*
+ Write the data
+ */
+  
 
 }
 
@@ -384,7 +425,16 @@ int main ()
     printf("\nIn the file: %s there are %d characters and %d lines",file_name,character_count,line_count);
     break;
 
-    
+    case 9:
+    printf("This function will read student information and then sort it based on id numbers");
+    char input[25];
+    char output[25];
+    printf("\nEnter the file name of the input\n>");
+    scanf("%s",input);
+    printf("\nEnter the file name for the output file\n>");
+    scanf("%s",output);
+    file_sort(input, output);
+    break;
 
 
 
