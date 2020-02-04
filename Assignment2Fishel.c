@@ -321,19 +321,44 @@ void file_sort(char *infile, char *outfile){
   /*
   Sort the data
   */
+  int j;
   int temp_id, min;
   char temp_gr;
   double temp_gpa;
-  for(i = 0; i<total; i++){
-    min = id[i];
-    
+  for(i = 0; i<total-1; i++){
+    min = i;
+    for(j = i+1; j < total; j++){
+      if(id[j] < id[min]){
+        min = j;
+
+        temp_id = id[min];
+        temp_gr = grade[min];
+        temp_gpa = gpa[min];
+        id[min] = id[i];
+        grade[min] = grade[i];
+        gpa[min] = gpa[i];
+        id[i] = temp_id;
+        grade[i] = temp_gr;
+        gpa[i] = temp_gpa;
+      }
+    }  
   }
 
  /*
  Write the data
  */
-  
-
+  FILE *fpp;
+  fpp = fopen(outfile, "w");
+  fputc( total+48,fpp);
+  for(i = 0; i<total; i++){
+    fprintf(fpp,"\n%d",id[i]);
+    fprintf(fpp," %c",grade[i]);
+    fprintf(fpp," %f",gpa[i]);
+  }
+  free(id);
+  free(grade);
+  free(gpa);
+  printf("Done!");
 }
 
 
