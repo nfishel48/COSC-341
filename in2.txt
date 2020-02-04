@@ -1,0 +1,6 @@
+5
+Nate 21 4.0
+Bill 23 1.0
+Jeff 18 2.4
+Steve 19 3.0
+Josh 14 4.0

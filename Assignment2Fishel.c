@@ -291,6 +291,10 @@ void file_count(char *file, int *characters, int *lines){
 ======================================================================================================
 */
 
+/*
+======================================================================================================
+This function will take in one file sort the data and output it to another file
+*/
 void file_sort(char *infile, char *outfile){
   FILE *fp;
   int *id;
@@ -358,21 +362,103 @@ void file_sort(char *infile, char *outfile){
   free(id);
   free(grade);
   free(gpa);
+  fclose(fpp);
   printf("Done!");
 }
+/*
+======================================================================================================
+*/
 
+
+/*
+======================================================================================================
+This function will read in a list of students and display the average gpa 
+Print all student names with greater than a 2.0 gpa
+and print student information in assending order of names.
+*/
+void file_student(char *infile){
+  FILE *fp;
+  fp = fopen(infile, "r");
+  int total = fgetc(fp);
+  total = total -48;
+  struct student{
+    char name[10];
+    int age;
+    double gpa;
+  };
+  struct student *students;
+  students = (struct student *)malloc(total * sizeof(struct student));
+  int i;
+  double avg = 0;
+
+  /*
+  Read in data and compute average
+  */
+  for(i = 0; i<total; i++){
+    fscanf(fp,"%s",&students[i].name);
+    fscanf(fp,"%d",&students[i].age);
+    fscanf(fp,"%lf",&students[i].gpa);
+    
+    if(students[i].gpa > 2.0){
+      printf("\n%s has a gpa greater than 2.0",students[i].name);
+    }
+    
+    avg = avg + students[i].gpa;
+  }
+  avg = avg/total;
+  printf("\nThe average gpa is: %f",avg);
+  /*
+  sort in assending order of names
+  */
+  int j;
+  char temp_name[10];
+  int temp_age, min;
+  double temp_gpa;
+  for(i = 0; i<total-1; i++){
+    min = i;
+    for(j = i+1; j < total; j++){
+      if(strcmp(students[j].name, students[min].name) < 0){
+        min = j;
+        strcpy(temp_name,students[min].name);
+        temp_age = students[min].age;
+        temp_gpa = students[min].gpa;
+        strcpy(students[min].name, students[i].name);
+        students[min].age = students[i].age;
+        students[min].gpa = students[i].gpa;
+        strcpy(students[i].name, temp_name);
+        students[i].age = temp_age;
+        students[i].gpa = temp_gpa;
+      }
+    }  
+  }
+  /*
+  Print the newly sorted array
+  */
+  for(i = 0; i<total; i++){
+    printf("\n%s",students[i].name);
+    printf(" %d",students[i].age);
+    printf(" %f",students[i].gpa);
+    
+  }
+
+}
+/*
+======================================================================================================
+*/
 
 /*
 Switch statement menu for debug and choosing function
 */
 int main ()
 {
-  printf("Welcome to Nathaniel Fishel's Assignment Two.\nPlease enter a question number to use.\n>");
+  int done = 0;
+while(done = 1){
+  printf("\nWelcome to Nathaniel Fishel's Assignment Two.\nPlease enter a question number to use.\n");
+  printf("Menu:\n1-computing pi\n2-computing square root\n3-displaying primes\n4-processing grades\n5-computing tax\n6-solving quadratic\n7-computing factorial\n8-counting file\n9-sorting-file\n10-student file\n11-quit\n>");
   int choice;
   scanf("%d",&choice);
   printf("\nYou entered: %d\n",choice );
   double pick;
-
   switch (choice) {
     case 1:
     printf("\nEnter a number to compute pi to the first nth terms\n>");
@@ -461,10 +547,18 @@ int main ()
     file_sort(input, output);
     break;
 
+    case 10:
+    printf("This function will read in a list of students and display the average gpa\nPrint all student names with greater than a 2.0 gpa\nand print student information in assending order of names.");
+    char s_input [25];   
+    printf("\nEnter the name of the input file\n>");
+    scanf("%s",s_input);
+    file_student(s_input);
+    break;
 
-
-
+    case 11:
+    done = 1;
+    exit(0);
+    break;
   }
-
-
+}
 }
