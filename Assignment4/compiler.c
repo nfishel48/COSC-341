@@ -66,7 +66,7 @@ token scanner()
         }else if (isspace(c))       /*skip white spaces and count line number*/
         {
             if(c == '\n'){
-                line_num = line_num++;
+                line_num = line_num+1;
             }
 
         }else if (isaplpha(c))      /*identifier or reversed word*/
@@ -108,7 +108,260 @@ token scanner()
         else if(c == '+')               /*plus operator*/
             return PLUSOP;
 
+        else if (c =='-')               /*comment or minus operator*/
+        {
+            c = getc(fin);
+            if(c == '-'){               /*read in comment*/
+                do {                    /*read and discard until end of line*/
+                   c = getc(fin);
+                }while (c != '\n');
+                line_num = line_num+1;   
+            }
+            else
+            {
+                unget(c, fin);
+                return MINUSOP;
+            }
+        }
+        else if(c == ':')             /*possible assignment operator*/
+        {
+            c = getc(fin);            
+            if(c == '=')              /*assignment operator*/
+                return ASSIGNOP;
+            else                      /*error due to :*/
+            {
+                ungetc(c, fin);
+                lexical_error();
+            }
+
+        }
+        else                           /*ivalid character*/
+            lexical_error();     
+
+    }
+}
+/***********************************************************************************************/
+
+/*clears the buffer*/
+void clear_fbuffer()
+{
+    token_ptr = 0;                      /*reset token pointer*/
+    token_buffer[token_ptr] = '\0';     /*add null character*/
+}
+
+/***********************************************************************************************/
+
+/*appends the char cter to the buffer*/
+void buffer_char(char c)
+{
+    token_buffer[token_ptr] = c;        /*append current character*/
+    token_ptr = token_ptr +1;           /*move token pointer*/
+    token_buffer[token_ptr] = '\0';     /*move null characters*/
+}
+
+/***********************************************************************************************/
+
+/*checks whearther buffer is reserved word or identifier*/
+token check_reserved()
+{
+    if(strcmp(token_buffer, "begin") == 0)  /*four reserved words*/
+        return BEGIN;
+    else if (strcmp(token_buffer, "end") == 0)
+        return END;
+    else if(strcmp(token_buffer, "read") == 0)
+        return READ;
+    else if(strcmp(token_buffer, "write") == 0)
+        return WRITE;
+    else                                    /*identifier*/
+        return ID;
+}
+
+/***********************************************************************************************/
+
+/*reports lexical error and sets the error flag*/
+void lexical_error()
+{
+    printf("lexical error in line %d/n", line_num);
+    error = TRUE;
+}
+
+/***********************************************************************************************/
+
+/*parses source file */
+void parser()
+{
+    next_token = scanner();             /*read the first token*/
+    program();                          /*parse the program*/
+    match(SCANEOF);                     /*check end of file*/
+}
+
+/***********************************************************************************************/
+
+/*parses a progaram */
+/* <program> --> begin<stmtlist>end */
+void program()
+{
+    match(BEGIN);                       /*begin**/
+    statement_list();                   /*list of statements*/
+    match(END);                         /*end*/
+}
+
+/***********************************************************************************************/
+
+/*parses list of  statement*/
+/* <stmtlist> --> <stmt>{<stmt>} */
+void statement_list()
+{
+    statement();                        /*first statement*/
+    while (TRUE)
+    {
+        if(next_token == ID || next_token == READ || next_token == WRITE)
+            statement();                /*subsequent statements*/
+        else
+            break;
     }
 }
 
+/***********************************************************************************************/
 
+/*parses one statement*/
+/* <stmt> --> id:=<expr>;
+   <stmt> --> read(<idlist>);
+   <stmt> --> write(<exprlist>); */
+void statement()
+{
+    if(next_token == ID)               /*assignment statement*/
+    {
+        match(ID);
+        match(ASSIGNOP);
+        expression();
+        match(SEMICOLON);
+    }
+    else if (next_token == READ)        /*read statement */
+    {
+        match(READ);
+        match(LPAREN);
+        id_list();
+        match(RPAREN);
+        match(SEMICOLON);
+    }
+    else if (next_token == WRITE)       /*write statement*/
+    {
+        match(WRITE);
+        match(LPAREN);
+        expression_list();
+        match(RPAREN);
+        match(SEMICOLON);
+    }
+    else                                /*invalid beginning of statement*/
+        syntax_error();
+}
+
+/***********************************************************************************************/
+
+/*parses list of identifiers*/
+/* <idlist> --> id{, id} */
+void id_list()
+{
+    match(ID);                          /*first identifer*/
+    while(next_token == COMMA)
+    {
+        match(ID);
+        while(next_token == COMMA)
+        {
+            match(COMMA);
+            match(ID);                  /*subsequent identifiers*/
+        }
+    }
+}
+
+/***********************************************************************************************/
+
+/*parses list of expressions */
+/* <explist> --> <term>{<adop><term>} */
+void expression_list()
+{
+    expression();                       /*first expression*/
+    while(next_token == COMMA)
+    {
+        match(COMMA);
+        expression();                   /*susequent expression*/
+    }
+}
+
+/***********************************************************************************************/
+
+/*parses one expression*/
+/* <exp> --> <term>{<adop><term>} */
+void expression()
+{
+    term();                             /*first term*/
+    while(next_token == PLUSOP || next_token == MINUSOP)
+    {
+        add_op();                       /*plus or minus operators*/
+        term();                         /*subsequenbt terms*/
+    }
+}
+
+/***********************************************************************************************/
+
+/*parses one term*/
+/* <term> --> id
+   <term> --> integer
+   <term> --> (<expr>)  */
+void term()
+{
+    if(next_token == ID)                /*identifer*/
+        match(ID);
+    else if(next_token == INTLITERAL)   /*integer literal*/
+        match(INTLITERAL);
+    else if (next_token == LPAREN)      /*expression inside parentheses*/
+    {
+        match(LPAREN);
+        expression();
+        match(PRAREN);
+    }
+    else
+        syntax_error();                 /*invalid term*/
+}
+
+/***********************************************************************************************/
+
+/*parses plus or minus operator*/
+/* <adop> --> +|- */
+void add_op()
+{
+    if(next_token == PLUSOP || next_token == MINUSOP)
+        matach(next_token);
+    else
+        syntax_error();
+}
+
+/***********************************************************************************************/
+
+/*checks wheather the expected token and the actual token match, and also reads the next 
+token from source file*/
+void match(token tok)
+{
+    if(tok == next_token)               /*expected token and actual token match*/
+    ;
+    else
+        syntax_error()                  /*expected token and actual token do not match*/
+    next_token = scanner();             /*read next token*/
+}
+
+/***********************************************************************************************/
+
+/*report syntax errors*/
+void syntax_error()
+{
+    printf("syntax error in line %d\n", line_num);
+    error = TRUE;
+}
+
+/***********************************************************************************************/
+
+int main()
+{
+    return 0;
+}
