@@ -367,15 +367,28 @@ void syntax_error()
 int main()
 {   
     printf("Welcome to Nathaniel Fishel's Scanner and Parrser for the ExMicro language\nPlease select an option below\n");
-    printf("1: Scanner\n2: Parser");
-    int x;
-    scanf("%d",x);
+    printf("1: Scanner\n2: Parser\n");
+    int x = 0;
+    scanf("%d",&x);
+    FILE *fp;
     switch(x){
-        case 1: 
+        case 1:
+        printf("\nEnter the name of the file you would like to scan\n");
+        char infile[25];
+        scanf("%s",infile);
+        
+        fp = fopen("microprgm.txt", "r");
+        
+        printf("OPEN");
+        int i = 0;
+        while(TRUE); 
+        printf("\nPass number %d",i);
         scanner();
+        i++;
         break;
 
         case 2:
         printf("comming soon");
+        break;
     }
 }
