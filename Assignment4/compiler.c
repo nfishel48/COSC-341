@@ -15,9 +15,11 @@ This compiler was created for the COSC-341 class
 /*enumerated types for token types*/
 typedef enum
 {
-    ID, INTLITERAL, BEGIN, END, READ, WRITE,
-    PLUSOP, MINUSOP, ASSIGNOP, LPAREN, RPAREN,
-    COMMA, SEMICOLON, SCANEOF
+    MAIN, LCURL, RCURL, ASSIGNOP, READ, WRITE, 
+    IF, ELSE, WHILE, PLUSOP, MINUSOP, MULTIOP, DIVOP,
+    LPAREN, RPAREN, LESSTHAN, GREATTHAN, EQUALTO,
+    LESSANDEQUAL, GREATANDEQUAL, NOTEQUAL, 
+    SEMICOLON, COMMA, SCANEOF
 
 } token;
 
@@ -100,6 +102,55 @@ token scanner()
             return INTLITERAL;          /*return integer literal*/
 
         }
+
+        else if(c =='>')               /*greater than*/
+             {
+            c = getc(fin);
+            if(c == '='){               /*and equal*/
+                return GREATANDEQUAL;               
+
+            }
+            else
+            {
+                ungetc(c, fin);
+                return GREATTHAN;
+            }
+        }
+
+        else if(c =='<')               /*less than*/
+             {
+            c = getc(fin);
+            if(c == '='){               /*and equal*/
+                return LESSANDEQUAL;               
+
+            }
+            else
+            {
+                ungetc(c, fin);
+                return LESSTHAN;
+            }
+        }
+
+        else if(c =='!')               /*greater than*/
+             {
+            c = getc(fin);
+            if(c == '='){               /*and equal*/
+                return NOTEQUAL;               
+
+            }
+            else
+            {
+                ungetc(c, fin);
+                lexical_error();
+            }
+        }
+
+        else if(c =='{')               /*left Bracket*/
+            return LCURL;
+
+        else if(c =='}')               /*Right bracket*/
+            return RCURL;
+
         else if(c =='(')               /*left parentheses*/
             return LPAREN;
         
@@ -112,13 +163,19 @@ token scanner()
         else if (c ==';')               /*semicolon*/
             return SEMICOLON;
 
+        else if(c == '*')               /*multiply operator*/
+            return MULTIOP;
+
+        else if(c == '-')               /*minus operator*/
+            return MINUSOP;
+
         else if(c == '+')               /*plus operator*/
             return PLUSOP;
 
-        else if (c == '-')               /*comment or minus operator*/
+        else if (c == '/')               /*comment or divide operator*/
         {
             c = getc(fin);
-            if(c == '-'){               /*read in comment*/
+            if(c == '/'){               /*read in comment*/
                 do                      /*read and discard until end of line*/                  
                    c = getc(fin);
                 while(c != '\n');
@@ -127,7 +184,7 @@ token scanner()
             else
             {
                 ungetc(c, fin);
-                return MINUSOP;
+                return DIVSOP;
             }
         }
         else if(c == ':')             /*possible assignment operator*/
@@ -174,10 +231,14 @@ void buffer_char(char c)
 /*checks whearther buffer is reserved word or identifier*/
 token check_reserved()
 {
-    if(strcmp(token_buffer, "begin") == 0)  /*four reserved words*/
-        return BEGIN;
-    else if (strcmp(token_buffer, "end") == 0)
-        return END;
+    if(strcmp(token_buffer, "main") == 0)  /*six reserved words*/
+        return MAIN;
+     else if(strcmp(token_buffer, "if") == 0)
+        return IF;
+     else if(strcmp(token_buffer, "else") == 0)
+        return ELSE;  
+     else if(strcmp(token_buffer, "while") == 0)
+        return WHILE;                   
     else if(strcmp(token_buffer, "read") == 0)
         return READ;
     else if(strcmp(token_buffer, "write") == 0)
@@ -191,7 +252,7 @@ token check_reserved()
 /*reports lexical error and sets the error flag*/
 void lexical_error()
 {
-    printf("lexical error in line %d/n", line_num);
+    printf("lexical error in line %d\n", line_num);
     error = TRUE;
 }
 
@@ -374,9 +435,9 @@ void syntax_error()
 void printTok(token current){
     char str[20];
     switch(current){                    /*This funtion will be used to return strings to output tokens*/
-        case ID:
-            printf("ID\n");
-            fprintf(out,"%s\n","ID");
+        case MAIN:
+            printf("MAIN\n");
+            fprintf(out,"%s\n","MAIN");
             break;
         case INTLITERAL:
             printf("INTLITERAL\n");
@@ -430,6 +491,59 @@ void printTok(token current){
             printf("SCANEOF\n");
             fprintf(out,"%s\n","SCANEOF");
             break;
+        case LCURL:
+            printf("LCURL\n");
+            fprintf(out,"%s\n","LCURL");
+            break;
+        case RCURL:
+            printf("RCURL\n");
+            fprintf(out,"%s\n","RCURL");
+            break;
+        case IF:
+            printf("IF\n");
+            fprintf(out,"%s\n","IF");
+            break;
+        case ELSE:
+            printf("ELSE\n");
+            fprintf(out,"%s\n","ELSE");
+            break;
+        case WHILE:
+            printf("WHILE\n");
+            fprintf(out,"%s\n","WHILE");
+            break;
+        case MULTIOP:
+            printf("MULTIOP\n");
+            fprintf(out,"%s\n","MULTIOP");
+            break;
+        case DIVOP:
+            printf("DIVOP\n");
+            fprintf(out,"%s\n","DIVOP");
+            break;
+        case LESSTHAN:
+            printf("LESSTHAN\n");
+            fprintf(out,"%s\n","LESSTHAN");
+            break;
+        case GREATTHAN:
+            printf("GREATTHAN\n");
+            fprintf(out,"%s\n","GREATTHAN");
+            break;
+        case EQUALTO:
+            printf("EQUALTO\n");
+            fprintf(out,"%s\n","EQUALTO");
+            break;
+        case LESSANDEQUAL:
+            printf("LESSANDEQUAL\n");
+            fprintf(out,"%s\n","LESSANDEQUAL");
+            break;
+        case GREATANDEQUAL:
+            printf("GREATANDEQUAL\n");
+            fprintf(out,"%s\n","GREATANDEQUAL");
+            break;
+        case NOTEQUAL:
+            printf("NOTEQUAL\n");
+            fprintf(out,"%s\n","NOTEQUAL");
+            break;
+        
     }
 }
 

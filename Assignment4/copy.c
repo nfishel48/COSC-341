@@ -43,6 +43,7 @@ void syntax_error();
 
 /*global varibles*/
 FILE *fin;                  /*source file*/
+FILE *out;                  /*output file*/
 token next_token;           /*next token in source file*/
 char token_buffer[100];     /*token buffer*/
 int token_ptr;              /*buffer pointer*/
@@ -65,13 +66,15 @@ token scanner()
         {
             return SCANEOF;         /*end of file*/
         
-        }else if (isspace(c))       /*skip white spaces and count line number*/
+        }
+        else if (isspace(c))       /*skip white spaces and count line number*/
         {
             if(c == '\n'){
-                line_num = line_num+1;
+                line_num = line_num + 1;
             }
 
-        }else if (isalpha(c))      /*identifier or reversed word*/
+        }
+        else if (isalpha(c))      /*identifier or reversed word*/
         {
             buffer_char(c);         /*buffer the first character*/
             c = getc(fin);
@@ -83,7 +86,8 @@ token scanner()
             ungetc(c, fin);           /*put back the last character read*/
             return check_reserved();  /*return identifier or reserved word*/  
 
-        }else if (isdigit(c))         /*integer literal*/
+        }
+        else if (isdigit(c))         /*integer literal*/
         {
             buffer_char(c);           /*buffer the first character*/
             c = getc(fin);
@@ -95,7 +99,8 @@ token scanner()
             ungetc(c, fin);             /*put back the last character read*/
             return INTLITERAL;          /*return integer literal*/
 
-        }else if(c =='(')               /*left parentheses*/
+        }
+        else if(c =='(')               /*left parentheses*/
             return LPAREN;
         
         else if(c == ')')               /*right parentheses*/
@@ -117,7 +122,7 @@ token scanner()
                 do                      /*read and discard until end of line*/                  
                    c = getc(fin);
                 while(c != '\n');
-                line_num = line_num+1; 
+                line_num = line_num + 1;  
             }
             else
             {
@@ -137,10 +142,12 @@ token scanner()
             }
 
         }
+    
         else                           /*ivalid character*/
             lexical_error();     
 
     }
+
 }
 /***********************************************************************************************/
 
@@ -184,7 +191,7 @@ token check_reserved()
 /*reports lexical error and sets the error flag*/
 void lexical_error()
 {
-    printf("lexical error in line %d/n", line_num);
+    printf("lexical error in line %d\n", line_num);
     error = TRUE;
 }
 
@@ -364,27 +371,92 @@ void syntax_error()
 
 /***********************************************************************************************/
 
+void printTok(token current){
+    char str[20];
+    switch(current){                    /*This funtion will be used to return strings to output tokens*/
+        case ID:
+            printf("ID\n");
+            fprintf(out,"%s\n","ID");
+            break;
+        case INTLITERAL:
+            printf("INTLITERAL\n");
+            fprintf(out,"%s\n","INTLITERAL");
+            break;
+        case BEGIN:
+            printf("BEGIN\n");
+            fprintf(out,"%s\n","BEGIN");
+            break;
+        case END:
+            printf("END\n");
+            fprintf(out,"%s\n","END");
+            break;
+        case READ:
+            printf("READ\n");
+            fprintf(out,"%s\n","READ");
+            break;
+        case WRITE: 
+            printf("WRITE\n");
+            fprintf(out,"%s\n","WRITE");
+            break;
+        case PLUSOP:
+            printf("PLUSOP\n");
+            fprintf(out,"%s\n","PLUSOP");
+            break;
+        case MINUSOP:
+            printf("MINUSOP\n");
+            fprintf(out,"%s\n","MINUSOP");
+            break;
+        case ASSIGNOP:
+            printf("ASSIGNOP\n");
+            fprintf(out,"%s\n","ASSIGNOP");
+            break;
+        case LPAREN:
+            printf("LPAREN\n");
+            fprintf(out,"%s\n","LPAREN");
+            break;
+        case RPAREN:
+            printf("RPAREN\n");
+            fprintf(out,"%s\n","RPAREN");
+            break;
+        case COMMA:
+            printf("COMMA\n");
+            fprintf(out,"%s\n","COMMA");
+            break;
+        case SEMICOLON:
+            printf("SEMICOLON\n");
+            fprintf(out,"%s\n","SEMICOLON");
+            break;
+        case SCANEOF:
+            printf("SCANEOF\n");
+            fprintf(out,"%s\n","SCANEOF");
+            break;
+    }
+}
+
 int main()
 {   
     printf("Welcome to Nathaniel Fishel's Scanner and Parrser for the ExMicro language\nPlease select an option below\n");
     printf("1: Scanner\n2: Parser\n");
     int x = 0;
     scanf("%d",&x);
-    FILE *fp;
     switch(x){
         case 1:
-        printf("\nEnter the name of the file you would like to scan\n");
+        printf("\nEnter the name of the file you would like to scan\n");        /*get file name and open it*/
         char infile[25];
         scanf("%s",infile);
+        fin = fopen(infile,"r");
+
+        printf("Enter the name of the output file for the tokens\n");            /*get name and open output file*/
+        char outfile[25];
+        scanf("%s",outfile);
+        out = fopen(outfile,"w");
         
-        fp = fopen("microprgm.txt", "r");
-        
-        printf("OPEN");
-        int i = 0;
-        while(TRUE); 
-        printf("\nPass number %d",i);
-        scanner();
-        i++;
+        token current;                                                          /*Output the tokens to the output file*/
+        while(current != SCANEOF){
+            current = scanner(); 
+            printTok(current);
+            printf("\n");
+        }
         break;
 
         case 2:
