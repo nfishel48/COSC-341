@@ -4,6 +4,7 @@ main
 	Var := 5+5(1*9/6);
 	read(a,b,c,d,e,f);
 	write(z,x,y);
+	wrte
 	if(5<6){
 		while(a == b){
 		a:=a*b;

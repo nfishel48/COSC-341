@@ -15,8 +15,8 @@ This compiler was created for the COSC-341 class
 /*enumerated types for token types*/
 typedef enum
 {
-    MAIN, LCURL, RCURL, ASSIGNOP, READ, WRITE, 
-    IF, ELSE, WHILE, PLUSOP, MINUSOP, MULTIOP, DIVOP,
+    MAIN, LCURL, RCURL, ASSIGNOP, READ, WRITE,
+    ID, INTLITERAL, IF, ELSE, WHILE, PLUSOP, MINUSOP, MULTIOP, DIVOP,
     LPAREN, RPAREN, LESSTHAN, GREATTHAN, EQUALTO,
     LESSANDEQUAL, GREATANDEQUAL, NOTEQUAL, 
     SEMICOLON, COMMA, SCANEOF
@@ -103,6 +103,20 @@ token scanner()
 
         }
 
+        else if(c =='=')               /*Equal too*/
+             {
+            c = getc(fin);
+            if(c == '='){               /*and equal*/
+                return EQUALTO;               
+
+            }
+            else
+            {
+                ungetc(c, fin);
+                lexical_error();
+            }
+        }
+
         else if(c =='>')               /*greater than*/
              {
             c = getc(fin);
@@ -184,7 +198,7 @@ token scanner()
             else
             {
                 ungetc(c, fin);
-                return DIVSOP;
+                return DIVOP;
             }
         }
         else if(c == ':')             /*possible assignment operator*/
@@ -272,9 +286,9 @@ void parser()
 /* <program> --> begin<stmtlist>end */
 void program()
 {
-    match(BEGIN);                       /*begin**/
+    //match(BEGIN);                       /*begin**/
     statement_list();                   /*list of statements*/
-    match(END);                         /*end*/
+    //match(END);                         /*end*/
 }
 
 /***********************************************************************************************/
@@ -436,111 +450,115 @@ void printTok(token current){
     char str[20];
     switch(current){                    /*This funtion will be used to return strings to output tokens*/
         case MAIN:
-            printf("MAIN\n");
+            //printf("MAIN\n");
             fprintf(out,"%s\n","MAIN");
             break;
+        case ID:
+            //printf("ID\n");
+            fprintf(out,"%s\n","ID");
+            break;
         case INTLITERAL:
-            printf("INTLITERAL\n");
+            //printf("INTLITERAL\n");
             fprintf(out,"%s\n","INTLITERAL");
             break;
-        case BEGIN:
-            printf("BEGIN\n");
-            fprintf(out,"%s\n","BEGIN");
-            break;
-        case END:
-            printf("END\n");
-            fprintf(out,"%s\n","END");
-            break;
+        // case BEGIN:
+        //     printf("BEGIN\n");
+        //     fprintf(out,"%s\n","BEGIN");
+        //     break;
+        // case END:
+        //     printf("END\n");
+        //     fprintf(out,"%s\n","END");
+        //     break;
         case READ:
-            printf("READ\n");
+            //printf("READ\n");
             fprintf(out,"%s\n","READ");
             break;
         case WRITE: 
-            printf("WRITE\n");
+            //printf("WRITE\n");
             fprintf(out,"%s\n","WRITE");
             break;
         case PLUSOP:
-            printf("PLUSOP\n");
+            //printf("PLUSOP\n");
             fprintf(out,"%s\n","PLUSOP");
             break;
         case MINUSOP:
-            printf("MINUSOP\n");
+            //printf("MINUSOP\n");
             fprintf(out,"%s\n","MINUSOP");
             break;
         case ASSIGNOP:
-            printf("ASSIGNOP\n");
+            //printf("ASSIGNOP\n");
             fprintf(out,"%s\n","ASSIGNOP");
             break;
         case LPAREN:
-            printf("LPAREN\n");
+            //printf("LPAREN\n");
             fprintf(out,"%s\n","LPAREN");
             break;
         case RPAREN:
-            printf("RPAREN\n");
+            //printf("RPAREN\n");
             fprintf(out,"%s\n","RPAREN");
             break;
         case COMMA:
-            printf("COMMA\n");
+            //printf("COMMA\n");
             fprintf(out,"%s\n","COMMA");
             break;
         case SEMICOLON:
-            printf("SEMICOLON\n");
+            //printf("SEMICOLON\n");
             fprintf(out,"%s\n","SEMICOLON");
             break;
         case SCANEOF:
-            printf("SCANEOF\n");
+            //printf("SCANEOF\n");
             fprintf(out,"%s\n","SCANEOF");
             break;
         case LCURL:
-            printf("LCURL\n");
+            //printf("LCURL\n");
             fprintf(out,"%s\n","LCURL");
             break;
         case RCURL:
-            printf("RCURL\n");
+            //printf("RCURL\n");
             fprintf(out,"%s\n","RCURL");
             break;
         case IF:
-            printf("IF\n");
+            //printf("IF\n");
             fprintf(out,"%s\n","IF");
             break;
         case ELSE:
-            printf("ELSE\n");
+            //printf("ELSE\n");
             fprintf(out,"%s\n","ELSE");
             break;
         case WHILE:
-            printf("WHILE\n");
+            //printf("WHILE\n");
             fprintf(out,"%s\n","WHILE");
             break;
         case MULTIOP:
-            printf("MULTIOP\n");
+            //printf("MULTIOP\n");
             fprintf(out,"%s\n","MULTIOP");
             break;
         case DIVOP:
-            printf("DIVOP\n");
+            //printf("DIVOP\n");
             fprintf(out,"%s\n","DIVOP");
             break;
         case LESSTHAN:
-            printf("LESSTHAN\n");
+            //printf("LESSTHAN\n");
             fprintf(out,"%s\n","LESSTHAN");
             break;
         case GREATTHAN:
-            printf("GREATTHAN\n");
+            //printf("GREATTHAN\n");
             fprintf(out,"%s\n","GREATTHAN");
             break;
         case EQUALTO:
-            printf("EQUALTO\n");
+            //printf("EQUALTO\n");
             fprintf(out,"%s\n","EQUALTO");
             break;
         case LESSANDEQUAL:
-            printf("LESSANDEQUAL\n");
+            //printf("LESSANDEQUAL\n");
             fprintf(out,"%s\n","LESSANDEQUAL");
             break;
         case GREATANDEQUAL:
-            printf("GREATANDEQUAL\n");
+            //printf("GREATANDEQUAL\n");
             fprintf(out,"%s\n","GREATANDEQUAL");
             break;
         case NOTEQUAL:
-            printf("NOTEQUAL\n");
+            //printf("NOTEQUAL\n");
             fprintf(out,"%s\n","NOTEQUAL");
             break;
         
@@ -569,7 +587,7 @@ int main()
         while(current != SCANEOF){
             current = scanner(); 
             printTok(current);
-            printf("\n");
+            //printf("\n");
         }
         break;
 
