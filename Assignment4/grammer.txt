@@ -1,0 +1,7 @@
+<program> --> main{ {<stmt-list}⁺ }
+<stmtlist> --> <stmt>{<stmt>}
+<stmt> -->(id<adop><expr> | read(<idlist>) | write(<exprlist>) |if(<exprlist>{}{else(<exprlist){}}) | while(<exprlist>))
+<explist> --> <term>{<adop><term>}
+<exp> --> <term>{<adop><term>}
+<term> --> (id | integer | (<expr>))
+

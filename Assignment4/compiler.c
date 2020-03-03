@@ -283,12 +283,15 @@ void parser()
 /***********************************************************************************************/
 
 /*parses a progaram */
-/* <program> --> begin<stmtlist>end */
+/* <program> --> main{ {<stmt-list}⁺ } */
 void program()
 {
-    //match(BEGIN);                       /*begin**/
+    match(MAIN);                        /*begin**/
+    match(LCURL);                       /*left curl bracket*/
     statement_list();                   /*list of statements*/
-    //match(END);                         /*end*/
+    match(RCURL);                       /*Right curl*/
+
+    
 }
 
 /***********************************************************************************************/
@@ -300,8 +303,10 @@ void statement_list()
     statement();                        /*first statement*/
     while (TRUE)
     {
-        if(next_token == ID || next_token == READ || next_token == WRITE)
+        if(next_token == ID || next_token == READ || next_token == WRITE || next_token == IF || next_token == ELSE || next_token == WHILE)
+        {
             statement();                /*subsequent statements*/
+        }
         else
             break;
     }
@@ -310,9 +315,7 @@ void statement_list()
 /***********************************************************************************************/
 
 /*parses one statement*/
-/* <stmt> --> id:=<expr>;
-   <stmt> --> read(<idlist>);
-   <stmt> --> write(<exprlist>); */
+/* <stmt> -->(id<adop><expr> | read(<idlist>) | write(<exprlist>) |if(<exprlist>{}{else(<exprlist){}}) | while(<exprlist>)) */
 void statement()
 {
     if(next_token == ID)               /*assignment statement*/
@@ -338,8 +341,41 @@ void statement()
         match(RPAREN);
         match(SEMICOLON);
     }
-    else                                /*invalid beginning of statement*/
+    else if (next_token == IF)          /*IF statement*/
+    {
+        match(IF);
+        match(LPAREN);
+        match(ID);
+        if(next_token == LESSTHAN || next_token == LESSANDEQUAL || next_token == EQUALTO || next_token == NOTEQUAL || next_token == GREATTHAN || next_token == GREATANDEQUAL)
+            match(next_token);
+        match(ID);
+        match(RPAREN);
+        match(LCURL);
+        expression_list();
+        match(RCURL);
+        if(next_token == ELSE){
+            match(LCURL);
+            expression_list();
+            match(RCURL);
+        }
+    }
+    else if(next_token == WHILE)        /*WHILE STATEMENT*/
+    {
+        match(WHILE);
+        match(LPAREN);
+        match(ID);
+        if(next_token == LESSTHAN || next_token == LESSANDEQUAL || next_token == EQUALTO || next_token == NOTEQUAL || next_token == GREATTHAN || next_token == GREATANDEQUAL)
+            match(next_token);
+        match(ID);
+        match(RPAREN);
+        match(LCURL);
+        expression_list();
+        match(RCURL);
+    }
+    else {                               /*invalid beginning of statement*/
         syntax_error();
+        
+    }
 }
 
 /***********************************************************************************************/
@@ -351,12 +387,8 @@ void id_list()
     match(ID);                          /*first identifer*/
     while(next_token == COMMA)
     {
-        match(ID);
-        while(next_token == COMMA)
-        {
             match(COMMA);
             match(ID);                  /*subsequent identifiers*/
-        }
     }
 }
 
@@ -381,7 +413,7 @@ void  expression_list()
 void expression()
 {
     term();                             /*first term*/
-    while(next_token == PLUSOP || next_token == MINUSOP)
+    while(next_token == PLUSOP || next_token == MINUSOP || next_token == MULTIOP || next_token == DIVOP)
     {
         add_op();                       /*plus or minus operators*/
         term();                         /*subsequenbt terms*/
@@ -390,8 +422,8 @@ void expression()
 
 /***********************************************************************************************/
 
-/*parses one term*/
-/* <term> --> id
+/*parses one term
+ <term> --> id
    <term> --> integer
    <term> --> (<expr>)  */
 void term()
@@ -406,8 +438,11 @@ void term()
         expression();
         match(RPAREN);
     }
-    else
+    else{
+
         syntax_error();                 /*invalid term*/
+        printf("Problem with term");
+    }
 }
 
 /***********************************************************************************************/
@@ -416,10 +451,15 @@ void term()
 /* <adop> --> +|- */
 void add_op()
 {
-    if(next_token == PLUSOP || next_token == MINUSOP)
+    if(next_token == PLUSOP || next_token == MINUSOP || next_token == MULTIOP || next_token == DIVOP || next_token == ASSIGNOP)
+    {
         match(next_token);
+    }
     else
+    {
         syntax_error();
+        printf("Problem with add_op");
+    }
 }
 
 /***********************************************************************************************/
@@ -432,6 +472,7 @@ void match(token tok)
     ;
     else
         syntax_error();                  /*expected token and actual token do not match*/
+
     next_token = scanner();             /*read next token*/
 }
 
@@ -567,32 +608,50 @@ void printTok(token current){
 
 int main()
 {   
+    int done = FALSE;
     printf("Welcome to Nathaniel Fishel's Scanner and Parrser for the ExMicro language\nPlease select an option below\n");
-    printf("1: Scanner\n2: Parser\n");
     int x = 0;
-    scanf("%d",&x);
-    switch(x){
-        case 1:
-        printf("\nEnter the name of the file you would like to scan\n");        /*get file name and open it*/
-        char infile[25];
-        scanf("%s",infile);
-        fin = fopen(infile,"r");
+    char infile[25];
+    while(!done)
+    {
+        line_num = 1;
+        printf("1: Scanner\n2: Parser\n3: Exit\n");
+        scanf("%d",&x);
+        switch(x){
+            case 1:
+                printf("\nEnter the name of the file you would like to scan\n");        /*get file name and open it*/
+                scanf("%s",infile);
+                fin = fopen(infile,"r");
 
-        printf("Enter the name of the output file for the tokens\n");            /*get name and open output file*/
-        char outfile[25];
-        scanf("%s",outfile);
-        out = fopen(outfile,"w");
-        
-        token current;                                                          /*Output the tokens to the output file*/
-        while(current != SCANEOF){
-            current = scanner(); 
-            printTok(current);
-            //printf("\n");
+                printf("Enter the name of the output file for the tokens\n");            /*get name and open output file*/
+                char outfile[25];
+                scanf("%s",outfile);
+                out = fopen(outfile,"w");
+                
+                token current;                                                          /*Output the tokens to the output file*/
+                while(current != SCANEOF){
+                    current = scanner(); 
+                    printTok(current);
+                    //printf("\n");
+                }
+            break;
+
+            case 2:
+                printf("Enter the name of the file you would like to parse\n");         /*get file name and open it*/
+                scanf("%s",infile);
+                fin = fopen(infile,"r");
+                printf("Parsing file now...................\n");
+
+                parser();                                                               /*parse the file and output any errors*/
+                if(error == FALSE)
+                    printf("Parsing was successful.\n");
+
+                break;
+            case 3:
+                exit(0);
+                break;
         }
-        break;
-
-        case 2:
-        printf("comming soon");
-        break;
+        fclose(fin);
+        fclose(out);
     }
 }
