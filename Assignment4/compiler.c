@@ -35,6 +35,7 @@ void parser();
 void program();
 void statement_list();
 void statement();
+void bool_exp();
 void id_list();
 void expresssion_list();
 void expression();
@@ -345,10 +346,7 @@ void statement()
     {
         match(IF);
         match(LPAREN);
-        match(ID);
-        if(next_token == LESSTHAN || next_token == LESSANDEQUAL || next_token == EQUALTO || next_token == NOTEQUAL || next_token == GREATTHAN || next_token == GREATANDEQUAL)
-            match(next_token);
-        match(ID);
+        bool_exp();
         match(RPAREN);
         match(LCURL);
         expression_list();
@@ -363,10 +361,7 @@ void statement()
     {
         match(WHILE);
         match(LPAREN);
-        match(ID);
-        if(next_token == LESSTHAN || next_token == LESSANDEQUAL || next_token == EQUALTO || next_token == NOTEQUAL || next_token == GREATTHAN || next_token == GREATANDEQUAL)
-            match(next_token);
-        match(ID);
+        bool_exp();
         match(RPAREN);
         match(LCURL);
         expression_list();
@@ -376,6 +371,22 @@ void statement()
         syntax_error();
         
     }
+}
+
+/***********************************************************************************************/
+
+/*parses boolean expression*/
+/* <bool-exp> --> id <bool> id */
+void bool_exp()
+{
+    match(ID);      /*first id*/
+    if(next_token == LESSTHAN || next_token == LESSANDEQUAL || next_token == EQUALTO || next_token == NOTEQUAL || next_token == GREATTHAN || next_token == GREATANDEQUAL)
+        match(next_token);
+    else
+    {
+        lexical_error();
+    }
+    match(ID);
 }
 
 /***********************************************************************************************/

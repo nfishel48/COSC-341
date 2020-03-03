@@ -6,8 +6,8 @@ main
 	write(z,y,x);
 	if ( a < b){
 		a*b
-	}
-	while(a>g){
+	red
+	while(ag){
 	a*b
 	}	
 }

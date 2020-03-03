@@ -1,7 +1,11 @@
+EBNF for XMICRO
+
 <program> --> main{ {<stmt-list}⁺ }
 <stmtlist> --> <stmt>{<stmt>}
-<stmt> -->(id<adop><expr> | read(<idlist>) | write(<exprlist>) |if(<exprlist>{}{else(<exprlist){}}) | while(<exprlist>))
+<stmt> -->(id:=<expr> | read(<idlist>) | write(<exprlist>) |if(<bool-exp>{}{else(<exprlist){}}) | while(<bool-exp>){exprlist})
 <explist> --> <term>{<adop><term>}
 <exp> --> <term>{<adop><term>}
+<bool-exp> --> id <bool> id
+<bool> --> (< | > | == | <= | >= | !=)
 <term> --> (id | integer | (<expr>))
 
