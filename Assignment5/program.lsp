@@ -9,6 +9,7 @@
     )
 
 
+
 ;function 1
 
 (defun f1 (x L)
@@ -20,21 +21,22 @@
         )
         
     )
-    
-;(print(f1 '0 '(a (a b (b c)) c d (e))))
+(print "function one :")
+(print(f1 '0 '(a (a b (b c)) c d (e))))
 
 ;function 2
 
 (defun f2 (L)
     (cond 
         ((null L) nil)                               ;if L is empty
-        ((null (cdr L)) nil)                             ;reached end of list
-        ((equal (listp (car L)) nil) t)                         ;if an atom is found                   
+        ((null (cdr L)) nil)                         ;reached end of list
+        ((equal (listp (car L)) nil) t)              ;if an atom is found                   
         )
     )
-
-;(print(f2 '((a b)(c d))))
-;(print(f2 '(a(b c))))
+(print "function two nil call: ")
+(print(f2 '((a b)(c d))))
+(print "function two true call: ")
+(print(f2 '(a(b c))))
 
 (defun f3 (X L)
     (cond
@@ -47,7 +49,8 @@
         (T (f3 X (cdr L)))                                       ;else call function again and do not add number to list
         )
     )
-(print (f3 '() '(23 6 7  9 18 3  6 7 22 7)))
+(print "function three: ")
+(print (f3 '() '(23 4 7 18 22)))
 
 ;funtion 4
 
@@ -64,8 +67,8 @@
                       
     )
    )
-     
-(print (f4  '1000 '(7 10 5)))
+(print "function four")
+(print (f4  '1000 '(6 9 2 7 10 5)))
 
 ;function 5
 
@@ -75,10 +78,68 @@
         (T(append (f5 (cdr L)) (list (car L)))) ;append front of list to the back of list
         )
     )
-;(print(f5 '(a (b c) (x) d)))
-        
+(print "function five")
+(print(f5 '(a (b c) (x) d)))
+
+;function 6
+
+(defun f6 (L)
+    (cond 
+        ((null L)nil) ; if empty return nil
+        (t(cons (car L) (f6 (cdr (cdr L))))) ; return the first element then call function to get the rest of the rest of the list
+        )
+    )
+(print "function six")
+(print(f6 '(c ( a b ) d (x y) (a) b)))
+
+;function 7
+
+(defun f7 (L n)
+    (cond
+        ((null L)nil) ;if empty return nil
+        ((equal n 0) (car L)) ;return this atom when n reaches 0
+        (t(f7 (cdr L) (- n 1))) ;take off firt element decrement n return the 
+        )
+    )
+(print "function seven")
+(print(f7  '(c (a b) (d c) (x y)) '2))
+
+;function 8
 
 
-                               
-        
+(defun f8 (L)
+    (cond 
+        ((null L)1) ;if empty 
+        ((listp(car L))(* (car (car L)) (f8 (cdr L))))                                 
+        (t(* (car L) (f8 (cdr L))))
+        )
+    )
 
+(print "function eight")
+(print(f8 '(2 5 4 3 2 1 10 5)))
+
+;function 9
+(defun f9 (L)
+    (cond
+        ((null L)nil)                               ; if empty
+        ((my_member (car L) (cdr L)) (f9 (cdr L)))  ;check if the atom is contained in the rest of the list 
+        (t (cons (car L) (f9 (cdr L))))             ;base case make a list with the element that is not in the other list
+        )
+    )
+(print "function nine")
+(print(f9 '(c (a b) c d (a b))))
+       
+
+;function 10
+
+(defun f10 (L1 L2)
+    (cond
+        ((null L1)nil);if list one is empty
+        ((null L2)nil);if list two is empty
+        ((my_member (car L1) L2) (cons (car L1) (f10 (cdr L1) L2))) ;if a member of the first list is contained in the second list add it to a new list
+        (t(f10 (cdr L1) L2)) ;else continue searching for intersection
+        )
+    )
+(print "function ten:")
+(print (f10 '(a (a b) c d) '(b (a b) d)))
+       
