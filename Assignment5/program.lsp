@@ -8,8 +8,6 @@
         )
     )
 
-
-
 ;function 1
 
 (defun f1 (x L)
@@ -38,19 +36,19 @@
 (print "function two true call: ")
 (print(f2 '(a(b c))))
 
-(defun f3 (X L)
+;function 3
+
+(defun f3 (L)
     (cond
-        ((null L) nil)
-        ((null (cdr L))                                         ;reached the end of the list
-         (cond                                                  ;check the last item in the list
-             ((< 0 (mod (car L) 2)) (cons (car L) X))           ;last atom was odd
-             ))
-        ((< 0 (mod (car L) 2)) (f3 (cons (car L) X) (cdr L)))    ;if number is odd add to a list and call function again
-        (T (f3 X (cdr L)))                                       ;else call function again and do not add number to list
+        ((null L)nil)    ;if empty
+        ((< 0 (mod (car L) 2)) (cons (car L) (f3 (cdr L)))) ;if its odd add to the list
+        (t(f3(cdr L)))                                      ;else continue
         )
     )
+
+
 (print "function three: ")
-(print (f3 '() '(23 4 7 18 22)))
+(print (f3  '(23 4 7 18 22)))
 
 ;funtion 4
 
@@ -85,7 +83,7 @@
 
 (defun f6 (L)
     (cond 
-        ((null L)nil) ; if empty return nil
+        ((null L)nil)                        ; if empty return nil
         (t(cons (car L) (f6 (cdr (cdr L))))) ; return the first element then call function to get the rest of the rest of the list
         )
     )
@@ -96,8 +94,8 @@
 
 (defun f7 (L n)
     (cond
-        ((null L)nil) ;if empty return nil
-        ((equal n 0) (car L)) ;return this atom when n reaches 0
+        ((null L)nil)           ;if empty return nil
+        ((equal n 0) (car L))   ;return this atom when n reaches 0
         (t(f7 (cdr L) (- n 1))) ;take off firt element decrement n return the 
         )
     )
@@ -109,9 +107,9 @@
 
 (defun f8 (L)
     (cond 
-        ((null L)1) ;if empty 
-        ((listp(car L))(* (car (car L)) (f8 (cdr L))))                                 
-        (t(* (car L) (f8 (cdr L))))
+        ((null L)1)                                     ;if empty 
+        ((listp(car L))(* (car (car L)) (f8 (cdr L))))  ;if it is a list get the first element of that list                               
+        (t(* (car L) (f8 (cdr L))))                     ;multipy the element and pass the rest of the list
         )
     )
 
@@ -134,10 +132,10 @@
 
 (defun f10 (L1 L2)
     (cond
-        ((null L1)nil);if list one is empty
-        ((null L2)nil);if list two is empty
+        ((null L1)nil)                                              ;if list one is empty
+        ((null L2)nil)                                              ;if list two is empty
         ((my_member (car L1) L2) (cons (car L1) (f10 (cdr L1) L2))) ;if a member of the first list is contained in the second list add it to a new list
-        (t(f10 (cdr L1) L2)) ;else continue searching for intersection
+        (t(f10 (cdr L1) L2))                                        ;else continue searching for intersection
         )
     )
 (print "function ten:")
