@@ -1,6 +1,6 @@
 #This program is written for COSC-341 assignment 6
 
-
+import math
 
 #========================================================================================================
 #Question 1
@@ -28,7 +28,6 @@ def compute_sqrt(x) :
     last = 1
     for i in range(11):
         nxt = .5*(last + x/last)
-        print(nxt)
         last = nxt
 
     return nxt
@@ -89,7 +88,196 @@ def process_scores():
     print('The max score was: ',max,'achieved by',max_name)
     print('The min score was: ',min,'achieved by',min_name)
 
-process_scores()
+#======================================================================================================
+#Question 5
+#This function will determine the tax amount according to the following tax rules:
+#Tax rates depend on income, martial status and state residency.
+#In state residents rates {
+#Single and income < 30000 tax rate->20%
+#Single and income > 30000 tax rate->25%
+#married and income < 50000 tax rate -> 10%
+#married and incom >= 50000 tax rate -> 15%
+#}
+#Out of state residents {
+#  same rules but -3%
+#}
+
+def compute_tax(income, status, state):
+    rate = 0 #varible for storing rate
+    i = 0 #counter
+
+    #if single
+    if status in ['single', 'SINGLE']:
+        if income < 30000:
+            rate = .15
+        else:
+            rate = .2
+    #if married
+    if status in ['married', 'MARRIED']:
+        if income < 50000:
+            rate = .1
+        else:
+            rate = .15
+    #if out of state
+    if state == 'o':
+        rate = rate - .03
+    
+    return income * rate
+
+#======================================================================================================
+#Question 6
+#This function will take the input parameters as coefficents of a quadratic equation.
+#It wil then compute if there are solutions
+#if there are solutions it will return the solutions if not it will return 0
+
+def quadratic(a, b, c):
+    cando = (b*b) - 4*a*c
+    if cando >= 0:
+        sol1 = ((b*-1) + math.sqrt((b*b)-(4*a*c)))/(2*a)
+        sol2 = ((b*-1) - math.sqrt((b*b)-(4*a*c)))/(2*a)
+        return sol1, sol2
+    else:
+        return 0,0
+    
+sol1 , sol2 = quadratic(2, 5, 3)
+
+
+#======================================================================================================
+#Question 7
+#this funtion will take in a list and sort the list using slection sort 
+
+def sort(list):
+    length = len(list)
+    for i in range(length):
+        #find minimum index
+        mindex = i
+        for j in range(i+1, length):
+            if list[mindex] > list[j]:
+                mindex = j
+        
+        #swap elements
+        list[i], list[mindex] = list[mindex], list[i]
+    return list
+
+#======================================================================================================
+#Question 8
+#this function will generate a password and username 
+
+def id_password(first, last):
+    #generate username
+    username = first[0]+last
+    #generate password
+    flast = len(first)
+    llast = len(last)
+    password = first[0] + first[flast-1] + last[0] + last[1] + last[2] + str(flast) + str(llast)
+    return username, password
+
+#======================================================================================================
+#Question 9
+#place a input file and a output file in the folder containing this program and this program will
+#sort a list of students by id numbers 
+
+def file_sort(infile, outfile):
+    #open the infile
+    infile = open(infile, 'r')
+   
+    #read in data from file to sepperate arrays
+    line = infile.readline()
+    line = line.strip()
+    ids = [0]*int(line)
+    names = [0]*int(line)
+    gpa = [0]*int(line)
+    length = int(line)
+    for i in range(0, length,1):
+        line = infile.readline()
+        line = line.strip()
+        line = line.split()
+        ids[i] = line[0]
+        names[i] = line[1]
+        gpa[i] = line[2]
+    infile.close()
+    
+    #sort arrays with selection sort
+    length = len(ids)
+    for i in range(length):
+        #find minimum index
+        mindex = i
+        for j in range(i+1, length):
+            if ids[mindex] > ids[j]:
+                mindex = j
+        
+        #swap elements
+        ids[i], ids[mindex] = ids[mindex], ids[i]
+        names[i], names[mindex] = names[mindex], names[i]
+        gpa[i], gpa[mindex] = gpa[mindex], gpa[i]
+
+    #write to outfile
+    outfile = open(outfile, 'w')
+    length = len(ids)
+    for i in range(0, length):
+        outfile.write(ids[i]+' '+names[i]+' '+gpa[i]+'\n')
+    outfile.close
+
+#======================================================================================================
+#Question 10
+#main menu
+done = False
+while done == False:
+    print("Welcome to Nathaniel Fishel's Assignment 6! please select a function from below")
+    choice = int(input('compute_pi:1\ncompute_sqrt:2\ndisplay_primes:3\nprocess_scores:4\ncompute_tax:5\nquadratic:6\nsort:7\nid_password:8\nfile_sort:9\nTo quit:0\n>'))
+    if choice == 1:
+        #compute_pi
+        n = int(input('Two what number do you want to find pi too?'))
+        print(compute_pi(n))
+    if choice == 2:
+        #compute_sqrt
+        x = int(input('What number would you like to find the square root of?'))
+        print(compute_sqrt(x))
+    if choice == 3:
+        #display_primes
+        q = int(input('From 0 to what number would you like the prime numbers'))
+        display_primes(q)
+    if choice == 4:
+        #process_scores
+        process_scores()
+    if choice == 5:
+        #compute_tax
+        income = input('What is your yearly income ')
+        status = input('Are you married or single ')
+        state = input('Do you live in or out of state ')
+        print(compute_tax(income, status, state))
+    if choice == 6:
+        #quadratic
+        a = int(input('Enter a '))
+        b = int(input('Enter b '))
+        c = int(input('Enter c '))
+        print(quadratic(a, b, c))
+    if choice == 7:
+        #sort
+        list = input('Enter a list of numbers')
+        print(sort(list))
+    if choice == 8:
+        #id_password
+        first = input('Enter your first name')
+        last = input('Enter your last name')
+        id_password(first, last)
+    if choice == 9:
+        #file_sort
+        infile = input('Enter the input file name')
+        outfile = input('Enter the output file name')
+        file_sort(infile, outfile)
+    if choice == 0:
+        #quit
+        exit()
+
+
+
+    
+        
+
+
+
+
 
     
 
