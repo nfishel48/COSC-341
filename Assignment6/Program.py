@@ -109,9 +109,9 @@ def compute_tax(income, status, state):
     #if single
     if status in ['single', 'SINGLE']:
         if income < 30000:
-            rate = .15
-        else:
             rate = .2
+        else:
+            rate = .25
     #if married
     if status in ['married', 'MARRIED']:
         if income < 50000:
@@ -139,7 +139,6 @@ def quadratic(a, b, c):
     else:
         return 0,0
     
-sol1 , sol2 = quadratic(2, 5, 3)
 
 
 #======================================================================================================
@@ -227,22 +226,22 @@ while done == False:
     choice = int(input('compute_pi:1\ncompute_sqrt:2\ndisplay_primes:3\nprocess_scores:4\ncompute_tax:5\nquadratic:6\nsort:7\nid_password:8\nfile_sort:9\nTo quit:0\n>'))
     if choice == 1:
         #compute_pi
-        n = int(input('Two what number do you want to find pi too?'))
+        n = int(input('Two what number do you want to find pi too? '))
         print(compute_pi(n))
     if choice == 2:
         #compute_sqrt
-        x = int(input('What number would you like to find the square root of?'))
+        x = int(input('What number would you like to find the square root of? '))
         print(compute_sqrt(x))
     if choice == 3:
         #display_primes
-        q = int(input('From 0 to what number would you like the prime numbers'))
+        q = int(input('From 0 to what number would you like the prime numbers '))
         display_primes(q)
     if choice == 4:
         #process_scores
         process_scores()
     if choice == 5:
         #compute_tax
-        income = input('What is your yearly income ')
+        income = int(input('What is your yearly income '))
         status = input('Are you married or single ')
         state = input('Do you live in or out of state ')
         print(compute_tax(income, status, state))
@@ -254,21 +253,29 @@ while done == False:
         print(quadratic(a, b, c))
     if choice == 7:
         #sort
-        list = input('Enter a list of numbers')
-        print(sort(list))
+        done = False
+        lst = []
+        inputt = [1]
+        while done == False:
+            inputt[0] = int(input('Enter a number or -1 to exit '))
+            if inputt[0] ==  -1:
+                break
+            lst= lst+inputt
+        print(sort(lst))
     if choice == 8:
         #id_password
-        first = input('Enter your first name')
-        last = input('Enter your last name')
-        id_password(first, last)
+        first = input('Enter your first name ')
+        last = input('Enter your last name ')
+        print(id_password(first, last))
     if choice == 9:
         #file_sort
-        infile = input('Enter the input file name')
-        outfile = input('Enter the output file name')
+        infile = input('Enter the input file name ')
+        outfile = input('Enter the output file name ')
         file_sort(infile, outfile)
+        print('Done!')
     if choice == 0:
         #quit
-        exit()
+        break
 
 
 
